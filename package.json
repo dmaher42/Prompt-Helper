@@ -1,11 +1,17 @@
 {
   "name": "prompt-helper",
+  "version": "1.0.0",
   "private": true,
+  "description": "",
   "workspaces": ["frontend", "backend"],
+  "type": "commonjs",
   "scripts": {
     "dev": "docker-compose up --build",
     "lint": "npm run lint --workspace backend && npm run lint --workspace frontend",
     "test": "npm run test --workspace backend && npm run test --workspace frontend",
     "build": "npm run build --workspace backend && npm run build --workspace frontend"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
