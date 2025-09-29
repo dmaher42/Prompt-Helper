@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: prompthelper
+      POSTGRES_PASSWORD: prompthelper
+      POSTGRES_DB: prompthelper
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - postgres
+    environment:
+      PORT: 4000
+      NODE_ENV: development
+      CLIENT_ORIGIN: http://localhost:5173
+      DATABASE_PROVIDER: postgresql
+      DATABASE_URL: postgresql://prompthelper:prompthelper@postgres:5432/prompthelper
+      JWT_SECRET: change-me
+      SESSION_COOKIE_NAME: prompt_helper_token
+      SESSION_COOKIE_SECURE: 'false'
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+    command: npm run dev
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:4000
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  pgdata:
