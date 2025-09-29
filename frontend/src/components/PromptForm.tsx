@@ -14,13 +14,15 @@ const defaultValues: PromptInput = {
 };
 
 export function PromptForm({ initialValues, onSubmit, submitLabel = 'Save Prompt' }: PromptFormProps) {
-  const [values, setValues] = useState<PromptInput>(initialValues ?? defaultValues);
+  const [values, setValues] = useState<PromptInput>(initialValues ?? { ...defaultValues });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialValues) {
       setValues(initialValues);
+    } else {
+      setValues({ ...defaultValues });
     }
   }, [initialValues]);
 
@@ -35,7 +37,7 @@ export function PromptForm({ initialValues, onSubmit, submitLabel = 'Save Prompt
     try {
       await onSubmit(values);
       if (!initialValues) {
-        setValues(defaultValues);
+        setValues({ ...defaultValues });
       }
     } catch (err) {
       setError((err as Error).message);
